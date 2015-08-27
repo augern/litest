@@ -2,11 +2,16 @@
 LiTest ReadMe
 -----------------------------
 
+![LiTest logo](litest_logo.png)
 *A C++ header framework for testing*
 
 -----------------------------
 
 # Usage
+
+LiTest is simple to integrate in your project. Just include the header, `litest.hpp`, and you are good to go.
+The interface is also fairly simple. You build the executable yourself, so there are a few boilerplate lines required to set up and run a test in code though.
+More on that later! First read about the assertions, the core of LiTest.
 
 
 ## Assertions
