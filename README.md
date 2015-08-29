@@ -3,6 +3,7 @@ LiTest ReadMe
 -----------------------------
 
 ![LiTest logo](litest_logo.png)
+
 *A C++ header framework for testing*
 
 -----------------------------
@@ -16,9 +17,11 @@ More on that later! First read about the assertions, the core of LiTest.
 
 ## Assertions
 
-There are multiple types of assertions, separated into two groups: *weak* and *strong* assertions.
+There are multiple types of *assertions*, separated into two groups: *weak* and *strong* assertions.
 Weak assertions may fail and the test will still continue. Contrary, if a strong assertion fails,
 the test will be aborted.
+
+There are also *pseudo-assertions* which share the syntax and behaviour of assertions but have a statically determined outcome. These can be useful for complex tests where the standard assertions aren't expressive enough.
 
 ### Weak Assertions
 
@@ -26,7 +29,6 @@ the test will be aborted.
 - `LT_EQUAL ( expr, value_expr )`
 - `LT_THROWS ( expr )`
 - `LT_EXCEPT ( expr, type )`
-- `LT_FAIL ( message )`
 
 ### Strong Assertions
 
@@ -34,11 +36,16 @@ the test will be aborted.
 - `LT_EQUAL_REQ ( expr, value_expr )`
 - `LT_THROWS_REQ ( expr )`
 - `LT_EXCEPT_REQ ( expr, type )`
+
+### Weak Pseudo-Assertions
+
+- `LT_MESSAGE ( message )`
+- `LT_PRINT_EXPR( expr )`
+- `LT_FAIL ( message )`
+
+### Strong Pseudo-Assertions
+
 - `LT_ABORT ( message )`
-
-## Pseudo-Assertions
-
-- `LT_MESSAGE ( msg ) `
 
 Each weak assertion type has a counterpart strong assertion type.
 
@@ -48,9 +55,6 @@ If these requirements are fulfilled these assertions are preferred to `LT_CHECK`
 - The type of `exprB` is dominant and chosen as the type to use for the assertion.
 - `exprA` has to be convertible to the type of `exprB`.
 - This type has to implement operator `==`.
-
-`LT_FAIL` and `LT_ABORT` are not really assertions as their behaviour is statically determined,
-but are very similar to the real assertions and can be useful in complex tests.
 
 ## Testing
 
