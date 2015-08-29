@@ -79,17 +79,23 @@ LT_ADD_TEST(suite, "My first test",
 	// Assert that an expression evaluates to true:
 	LT_CHECK(vec.empty());
 
+	// Add a message to test output:
 	LT_MESSAGE("Adding an element to the vector");
-	vec.push_back(1);
+
+	vec.push_back(42);
+	vec.push_back(56);
 
 	// Assert equality of two expressions:
-	LT_EQUAL(vec.size(), 1);
+	LT_EQUAL(vec.size(), 2);
 
 	// Assert that an expression throws:
 	LT_THROWS(throw "Bad code");
 
 	// Assert that an expression throws a certain type:
 	LT_EXCEPT(vec.at(5), std::out_of_range);
+
+	// Print the value of an expression
+	LT_PRINT_EXPR(vec);
 });
 
 suite.run<litest::TestResultFormatterMarkdown<>>(std::cout);
@@ -98,13 +104,14 @@ suite.run<litest::TestResultFormatterMarkdown<>>(std::cout);
 Which results in the following output:
 
 ~~~
-Test 1: *Tests that pass* in file *mytest.cpp*
+Test 1: *My first test* in file *mytest.cpp*
 ------------------------------------------------
-- Line 28:	Passed check:  in `vec.empty()`
-- Line 30:	Message: Adding an element to the vector.
-- Line 34:	Passed equals: `vec.size()` == `1`
-- Line 37:	Passed throw:  in `throw "Bad code"`
-- Line 40:	Passed throw:  in `vec.at(5)`
+- Line 18:	Passed check:  in `vec.empty()`
+- Line 21:	Adding an element to the vector.
+- Line 27:	Passed equals: `vec.size()` == `2`
+- Line 30:	Passed throw:  in `throw "Bad code"`
+- Line 33:	Passed throw:  in `vec.at(5)`
+- Line 36:	`vec` evaluates to `{ 42, 56,  }`.
 
 **Total passed / failed assertions: 4 / 0**
 
