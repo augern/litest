@@ -977,7 +977,7 @@ namespace litest
 		
 		inline void formatMessage(int line, std::string message) override
 		{
-			if (logMesages) s << "- Line " << line << ":\tMessage: " << message << "."  << std::endl;
+			if (logMesages) s << "- Line " << line << ":\t" << message << "."  << std::endl;
 		}
 		
 		inline void formatUnexpectedException(int line, std::string expr, std::string msg) override
@@ -1075,25 +1075,25 @@ namespace litest
 		inline void formatUnexpectedException(int line, std::string expr, std::string msg) override
 		{
 			s << "<div class='log-item fail unexpected-exception'><span class='line-nr'>" << line << "</span>";
-			s << "Caught exception: <em>" << msg << "</em> in: <code class='bad'>" << expr << "</code></div>";
+			s << "Caught exception: <em>" << msg << "</em> in: <code>" << expr << "</code></div>";
 		}
 		
 		inline void formatFailedCheck(int line, std::string expr) override
 		{
 			s << "<div class='log-item fail broken-assertion'><span class='line-nr'>" << line << "</span>";
-			s << "Failed check: <code class='bad'>" << expr << "</code></div>";
+			s << "Failed check: <code>" << expr << "</code></div>";
 		}
 		
 		inline void formatFailedThrow(int line, std::string expr) override
 		{
 			s << "<div class='log-item fail no-exception'><span class='line-nr'>" << line << "</span>";
-			s << "Expected exception: <code class='bad'>" << expr << "</code></div>";
+			s << "Expected exception: <code>" << expr << "</code></div>";
 		}
 		
 		inline void formatFailedEquals(int line, std::string expr, std::string val, std::string res) override
 		{
 			s << "<div class='log-item fail unexpected-value'><span class='line-nr'>" << line << "</span>";
-			s << "Failed equals: <code class='bad'>" << expr << "</code> != <code>" << val << "</code>, got <code class='bad'>" << res << "</code></div>";
+			s << "Failed equals: <code>" << expr << "</code> != <code>" << val << "</code>, got <code>" << res << "</code></div>";
 		}
 		
 		inline void formatManualFailure(int line, std::string reason) override
@@ -1130,7 +1130,8 @@ namespace litest
 				code {\
 					background-color: darkgreen; color: white;\
 					padding: 0.1em 0.5em; border-radius: 0.5em; }\
-				code.bad { background-color: darkred;}\
+				.log-item.fail code { background-color: darkred;}\
+				.log-item.message code { color: black; background-color: yellow;}\
 				.line-nr {\
 					color: black; background-color: rgb(200, 200, 200);\
 					border-right: 3px solid #999;\
