@@ -216,33 +216,8 @@ int main()
 	suite.run<litest::TestResultFormatterHTML>(outfile);
 	
 	// Or Markdown
-	suite.run<litest::TestResultFormatterMarkdown<>>(std::cout);
+	suite.run<litest::TestResultFormatterMarkdown<litest::LogLevel::Everything>>(std::cout);
 	
 	// Or add your own formatter
 	suite.run<MyCustomTestResultFormatter>(std::cout);
-	
-	
-	litest::TestSuite suite2("Test suite");
-	
-	LT_ADD_TEST(suite2, "Tests that pass",
-	{
-		std::vector<int> vec;
-		
-		// Assert that an expression evaluates to true:
-		LT_CHECK(vec.empty());
-		
-		LT_MESSAGE("Adding an element to the vector");
-		vec.push_back(1);
-		
-		// Assert equality of two expressions:
-		LT_EQUAL(vec.size(), 1);
-		
-		// Assert that an expression throws:
-		LT_THROWS(throw "Bad code");
-		
-		// Assert that an expression throws a certain type:
-		LT_EXCEPT(vec.at(5), std::out_of_range);
-	});
-	
-	suite2.run<litest::TestResultFormatterMarkdown<litest::LogLevel::Everything>>(std::cout);
 }
