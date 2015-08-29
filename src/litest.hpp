@@ -535,9 +535,25 @@ namespace litest
 		 @param res Actual value.
 		 */
 		template<typename T>
-		void formatFailedEquals(int line, std::string expr, T val, T res)
+		inline void formatFailedEquals(int line, std::string expr, T val, T res)
 		{
 			this->formatFailedEquals(line, expr, internal::descriptionIfAvailable(val), internal::descriptionIfAvailable(res));
+		}
+		
+		/**
+		 Format line number.
+		 @param line Line number or 0 for unknown line number.
+		 @return Formatted line number or string representing unknown line number.
+		 */
+		inline virtual std::string lineNr(int line)
+		{
+			if (line > 0)
+			{
+				std::stringstream ss;
+				ss << line;
+				return ss.str();
+			}
+			else return "???";
 		}
 		
 	protected:
@@ -987,57 +1003,62 @@ namespace litest
 		
 		inline void formatAbortedTest(int line, std::string reason) override
 		{
-			s << "- Line " << line << ":\t**Test aborted: " << reason << "**"  << std::endl;
+			s << "- " << lineNr(line) << ":\t**Test aborted: " << reason << "**"  << std::endl;
 		}
 		
 		inline void formatPassedCheck(int line, std::string expr) override
 		{
-			if (logPasses) s << "- Line " << line << ":\tPassed check: " << " in `" << expr << "`" << std::endl;
+			if (logPasses) s << "- " << lineNr(line) << ":\tPassed check: " << " in `" << expr << "`" << std::endl;
 		}
 		
 		inline void formatPassedThrow(int line, std::string expr) override
 		{
-			if (logPasses) s << "- Line " << line << ":\tPassed throw: " << " in `" << expr << "`" << std::endl;
+			if (logPasses) s << "- " << lineNr(line) << ":\tPassed throw: " << " in `" << expr << "`" << std::endl;
 		}
 		
 		inline void formatPassedEquals(int line, std::string expr, std::string val) override
 		{
-			if (logPasses) s << "- Line " << line << ":\tPassed equals: `" << expr << "` == `" << val << "`" << std::endl;
+			if (logPasses) s << "- " << lineNr(line) << ":\tPassed equals: `" << expr << "` == `" << val << "`" << std::endl;
 		}
 		
 		inline void formatMessage(int line, std::string message) override
 		{
-			if (logMesages) s << "- Line " << line << ":\t" << message << "."  << std::endl;
+			if (logMesages) s << "- " << lineNr(line) << ":\t" << message << "."  << std::endl;
 		}
 			
 		inline void formatExpr(int line, std::string exprstr, std::string valstr)
 		{
-			if (logMesages) s << "- Line " << line << ":\t`" << exprstr << "` evaluates to `" << valstr << "`." << std::endl;
+			if (logMesages) s << "- " << lineNr(line) << ":\t`" << exprstr << "` evaluates to `" << valstr << "`." << std::endl;
 		}
 		
 		inline void formatUnexpectedException(int line, std::string expr, std::string msg) override
 		{
-			s << "- Line " << line << ":\tException was caught: " << msg << " in `" << expr << "`" << std::endl;
+			s << "- " << lineNr(line) << ":\tException was caught: " << msg << " in `" << expr << "`" << std::endl;
 		}
 		
 		inline void formatFailedCheck(int line, std::string expr) override
 		{
-			s << "- Line " << line << ":\tAssertion failed: `" << expr << "`" << std::endl;
+			s << "- " << lineNr(line) << ":\tAssertion failed: `" << expr << "`" << std::endl;
 		}
 		
 		inline void formatFailedThrow(int line, std::string expr) override
 		{
-			s << "- Line " << line << ":\tExpected exception: `" << expr << "`" << std::endl;
+			s << "- " << lineNr(line) << ":\tExpected exception: `" << expr << "`" << std::endl;
 		}
 		
 		inline void formatFailedEquals(int line, std::string expr, std::string val, std::string res) override
 		{
-			s << "- Line " << line << ":\tEquals failed: `" << expr << "` != `" <<  val << "` (got `" << res << "`)" << std::endl;
+			s << "- " << lineNr(line) << ":\tEquals failed: `" << expr << "` != `" <<  val << "` (got `" << res << "`)" << std::endl;
 		}
 		
 		inline void formatManualFailure(int line, std::string reason) override
 		{
-			s << "- Line " << line << ":\tManual failure, reason: '" << reason << "'" << std::endl;
+			s << "- " << lineNr(line) << ":\tManual failure, reason: '" << reason << "'" << std::endl;
+		}
+			
+		inline std::string lineNr(int line)
+		{
+			return "Line " + TestResultFormatter::lineNr(line);
 		}
 		
 	};
@@ -1079,67 +1100,67 @@ namespace litest
 		
 		inline void formatAbortedTest(int line, std::string reason) override
 		{
-			s << "<div class='log-item abort'><span class='line-nr'>" << line << "</span>";
+			s << "<div class='log-item abort'><span class='line-nr'>" << lineNr(line) << "</span>";
 			s << "↳ Test aborted: <span class='abort-msg'>" << reason << "</span></div>";
 		}
 		
 		inline void formatMessage(int line, std::string message) override
 		{
-			s << "<div class='log-item message'><span class='line-nr'>" << line << "</span>";
+			s << "<div class='log-item message'><span class='line-nr'>" << lineNr(line) << "</span>";
 			s << "<span class='msg-txt'>" << message << "</em></div>";
 		}
 		
 		inline void formatExpr(int line, std::string exprstr, std::string valstr)
 		{
-			s << "<div class='log-item message'><span class='line-nr'>" << line << "</span>";
+			s << "<div class='log-item message'><span class='line-nr'>" << lineNr(line) << "</span>";
 			s << "Print expression <code>" << exprstr << "</code>: <code>" << valstr << "</code></div>";
 		}
 		
 		inline void formatPassedCheck(int line, std::string expr) override
 		{
-			s << "<div class='log-item pass check'><span class='line-nr'>" << line << "</span>";
+			s << "<div class='log-item pass check'><span class='line-nr'>" << lineNr(line) << "</span>";
 			s << "Passed check: <code>" << expr << "</code></div>";
 		}
 		
 		inline void formatPassedThrow(int line, std::string expr) override
 		{
-			s << "<div class='log-item pass throw'><span class='line-nr'>" << line << "</span>";
+			s << "<div class='log-item pass throw'><span class='line-nr'>" << lineNr(line) << "</span>";
 			s << "Passed throw check: <code>" << expr << "</code></div>";
 		}
 		
 		inline void formatPassedEquals(int line, std::string expr, std::string val) override
 		{
-			s << "<div class='log-item pass equals'><span class='line-nr'>" << line << "</span>";
+			s << "<div class='log-item pass equals'><span class='line-nr'>" << lineNr(line) << "</span>";
 			s << "Passed equals: <code>" << expr << "</code> == <code>" << val << "</code></div>";
 		}
 		
 		inline void formatUnexpectedException(int line, std::string expr, std::string msg) override
 		{
-			s << "<div class='log-item fail unexpected-exception'><span class='line-nr'>" << line << "</span>";
+			s << "<div class='log-item fail unexpected-exception'><span class='line-nr'>" << lineNr(line) << "</span>";
 			s << "Caught exception: <em>" << msg << "</em> in: <code>" << expr << "</code></div>";
 		}
 		
 		inline void formatFailedCheck(int line, std::string expr) override
 		{
-			s << "<div class='log-item fail broken-assertion'><span class='line-nr'>" << line << "</span>";
+			s << "<div class='log-item fail broken-assertion'><span class='line-nr'>" << lineNr(line) << "</span>";
 			s << "Failed check: <code>" << expr << "</code></div>";
 		}
 		
 		inline void formatFailedThrow(int line, std::string expr) override
 		{
-			s << "<div class='log-item fail no-exception'><span class='line-nr'>" << line << "</span>";
+			s << "<div class='log-item fail no-exception'><span class='line-nr'>" << lineNr(line) << "</span>";
 			s << "Expected exception: <code>" << expr << "</code></div>";
 		}
 		
 		inline void formatFailedEquals(int line, std::string expr, std::string val, std::string res) override
 		{
-			s << "<div class='log-item fail unexpected-value'><span class='line-nr'>" << line << "</span>";
+			s << "<div class='log-item fail unexpected-value'><span class='line-nr'>" << lineNr(line) << "</span>";
 			s << "Failed equals: <code>" << expr << "</code> != <code>" << val << "</code>, got <code>" << res << "</code></div>";
 		}
 		
 		inline void formatManualFailure(int line, std::string reason) override
 		{
-			s << "<div class='log-item fail manual'><span class='line-nr'>" << line << "</span>";
+			s << "<div class='log-item fail manual'><span class='line-nr'>" << lineNr(line) << "</span>";
 			s << "Manual failure: <em>" << reason << "</em></div>";
 		}
 		
