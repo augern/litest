@@ -322,7 +322,7 @@ namespace litest
 		/**
 		 Generates a 'not available' description for a value (used in a LiTest assertion).
 		 Overload resolution fallback for types used in LiTest assertions that does not
-		 implement operator<< for output streams.
+		 implement any of the overloaded mechanisms for printing values.
 		 @param ... The value to describe. Elipsis parameter used for a weak overload precedence.
 		 @return A string representing 'not available'
 		 */
@@ -333,12 +333,10 @@ namespace litest
 		
 		/**
 		 Generates a proper description for a value (used in a LiTest assertion).
-		 By appyling operator<< with a stringstream.
-		 Types not implementing operator<< in this way can still call the function.
-		 A substitution failure will occur and the 'description not available' overload will be selected instead.
-		 
+		 This overload prints by appyling operator<< with a std::stringstream.
 		 @tparam T Type of the value to describe.
 		 @param val Value to describe.
+		 @return A string description of val.
 		 */
 		template<typename T>
 		decltype(std::declval<std::stringstream&>() << std::declval<T>(), std::string())
@@ -347,6 +345,23 @@ namespace litest
 			std::stringstream vals;
 			vals << val;
 			return vals.str();
+		}
+		
+		/**
+		 Generates a proper description for a value (used in a LiTest assertion).
+		 For iterable containers, by std::copy():ing the contents of the containter to a std::stringstream with
+		 std::ostream_iterator.
+		 @tparam T Type of the value to describe.
+		 @param val Value to describe.
+		 @return A string description of val.
+		 */
+		template<typename T>
+		decltype(begin(std::declval<T>()), std::string())
+		descriptionIfAvailable(T &val)
+		{
+			std::stringstream vals;
+			std::copy(begin(val), end(val), std::ostream_iterator<typename T::value_type> { vals, ", " });
+			return "{ " + vals.str() + " }";
 		}
 	}
 	

@@ -120,16 +120,20 @@ int main()
 		// Add a message to test output:
 		LT_MESSAGE("Adding an element to the vector");
 		
-		vec.push_back(1);
+		vec.push_back(42);
+		vec.push_back(56);
 		
 		// Assert equality of two expressions:
-		LT_EQUAL(vec.size(), 1);
+		LT_EQUAL(vec.size(), 2);
 		
 		// Assert that an expression throws:
 		LT_THROWS(throw "Bad code");
 		
 		// Assert that an expression throws a certain type:
 		LT_EXCEPT(vec.at(5), std::out_of_range);
+		
+		// Print the value of an expression
+		LT_PRINT_EXPR(vec);
 	});
 	
 	LT_ADD_TEST(suite, "Tests that fail",
