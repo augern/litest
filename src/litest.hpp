@@ -179,6 +179,12 @@
  */
 #define LT_MESSAGE(message) LITEST_CONTEXT_ARG.output->formatMessage(__LINE__, message)
 
+/**
+ Print the value of an expression during a test.
+ @param expr Expresstion to evaluate and print.
+ */
+#define LT_PRINT_EXPR(expr) LITEST_CONTEXT_ARG.output->formatExpr(__LINE__, #expr, litest::internal::descriptionIfAvailable(expr))
+
 /**@}*/
 
 /**
@@ -448,6 +454,15 @@ namespace litest
 		 @param message Message to log.
 		 */
 		virtual void formatMessage(int line, std::string message) {}
+		
+		/**
+		 Called when an expression should be logged to output.
+		 Does nothing unless overridden.
+		 @param line Line number where the assertion was defined.
+		 @param exprstr String representation of the expression in the assertion.
+		 @param valstr String representation of the value of the expression.
+		 */
+		virtual void formatExpr(int line, std::string exprstr, std::string valstr) {}
 		
 		/**
 		 Called when an unexpected exception was caught during an assertion.
@@ -979,6 +994,11 @@ namespace litest
 		{
 			if (logMesages) s << "- Line " << line << ":\t" << message << "."  << std::endl;
 		}
+			
+		inline void formatExpr(int line, std::string exprstr, std::string valstr)
+		{
+			if (logMesages) s << "- Line " << line << ":\t`" << exprstr << "` evaluates to `" << valstr << "`." << std::endl;
+		}
 		
 		inline void formatUnexpectedException(int line, std::string expr, std::string msg) override
 		{
@@ -1052,6 +1072,12 @@ namespace litest
 		{
 			s << "<div class='log-item message'><span class='line-nr'>" << line << "</span>";
 			s << "<span class='msg-txt'>" << message << "</em></div>";
+		}
+		
+		inline void formatExpr(int line, std::string exprstr, std::string valstr)
+		{
+			s << "<div class='log-item message'><span class='line-nr'>" << line << "</span>";
+			s << "Print expression <code>" << exprstr << "</code>: <code>" << valstr << "</code></div>";
 		}
 		
 		inline void formatPassedCheck(int line, std::string expr) override
