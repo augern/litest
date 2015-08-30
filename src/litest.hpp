@@ -357,7 +357,7 @@ namespace litest
 		 */
 		template<typename T>
 		decltype(begin(std::declval<T>()), std::string())
-		descriptionIfAvailable(T &val)
+		descriptionIfAvailable(T const& val)
 		{
 			std::stringstream vals;
 			std::copy(begin(val), end(val), std::ostream_iterator<typename T::value_type> { vals, ", " });
@@ -747,7 +747,7 @@ namespace litest
 	 @param onFail @optional Action to take after reporting.
 	 @return Failed assertion result.
 	 */
-	AssertionResult reportException(TestSuite &suite, int line, std::string exprstr, std::string msg, OnAssertionFailure onFail)
+	AssertionResult reportException(TestSuite &suite, int line, std::string exprstr, std::string msg, OnAssertionFailure onFail = OnAssertionFailure::Abort)
 	{
 		suite.failed();
 		suite.output->formatUnexpectedException(line, exprstr, msg);
@@ -796,11 +796,11 @@ namespace litest
 		}
 		catch (std::exception &e)
 		{
-			return reportException(suite, line, exprstr, e.what(), onFail);
+			return reportException(suite, line, exprstr, e.what());
 		}
 		catch (...)
 		{
-			return reportException(suite, line, exprstr, "N/A", onFail);
+			return reportException(suite, line, exprstr, "N/A");
 		}
 	}
 	
@@ -824,11 +824,11 @@ namespace litest
 		try { res = func(); }
 		catch (std::exception &e)
 		{
-			return reportException(suite, line, exprstr, e.what(), onFail);
+			return reportException(suite, line, exprstr, e.what());
 		}
 		catch (...)
 		{
-			return reportException(suite, line, exprstr, "N/A", onFail);
+			return reportException(suite, line, exprstr, "N/A");
 		}
 		
 		if (!res)
@@ -875,11 +875,11 @@ namespace litest
 		}
 		catch (std::exception &e)
 		{
-			return reportException(suite, line, exprstr, e.what(), onFail);
+			return reportException(suite, line, exprstr, e.what());
 		}
 		catch (...)
 		{
-			return reportException(suite, line, exprstr, "Uncaught exception in exception assertion", onFail);
+			return reportException(suite, line, exprstr, "Uncaught exception in exception assertion");
 		}
 		
 		suite.failed();
