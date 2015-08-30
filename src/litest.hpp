@@ -43,6 +43,7 @@
 #include <type_traits>
 #include <iomanip>
 #include <numeric>
+#include <chrono>
 
 /**@{*/
 /** @name Internal-use macros */
@@ -281,6 +282,12 @@ namespace litest
 	 */
 	using TestFunc = std::function<void(TestSuite &)>;
 	
+	/** Type used for time points. */
+	using TimeType = std::chrono::time_point<std::chrono::system_clock>;
+	
+	/** Type used for calculating test running times. */
+	using TimeTypeHiRes = std::chrono::time_point<std::chrono::high_resolution_clock>;
+	
 	/**
 	 A test.
 	 */
@@ -310,6 +317,12 @@ namespace litest
 		
 		/** Whether this test was aborted. */
 		bool aborted = false;
+		
+		/**
+		 Time taken to run this test, in seconds.
+		 Invalid if aborted is true.
+		 */
+		double duration;
 	};
 	
 	// --------------------------
@@ -605,6 +618,7 @@ namespace litest
 			this->output = new TestResultFormatterType(out);
 			this->totalStats_ = TestStats();
 			
+			auto startTime = TimeType::clock::now();
 			this->output->formatTestSuiteStart(*this);
 			
 			// Run each test in turn
@@ -619,7 +633,10 @@ namespace litest
 				try
 				{
 					// Run the test
+					auto testStartTime = TimeTypeHiRes::clock::now();
 					test.func(*this);
+					auto endTime = TimeTypeHiRes::clock::now();
+					test.duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - testStartTime).count() / 1e6;
 				}
 				catch (TestAbortException &e)
 				{
@@ -640,6 +657,8 @@ namespace litest
 				this->output->formatTestFooter(test, this->currentTestStats());
 			}
 			
+			this->endTime = TimeType::clock::now();
+			this->duration = std::chrono::duration_cast<std::chrono::microseconds>(this->endTime - startTime).count() / 1e6;
 			this->output->formatTestSuiteEnd(*this);
 			delete output;
 		}
@@ -721,6 +740,12 @@ namespace litest
 		
 		/** Ordered list of the tests to run. */
 		std::vector<Test> tests;
+		
+		/** Time point when this test suite completed. */
+		TimeType endTime;
+		
+		/** Time taken to run this test suite, in seconds. */
+		double duration;
 		
 	private:
 		
