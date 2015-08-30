@@ -819,14 +819,8 @@ namespace litest
 				return AssertionResult::Passed;
 			}
 		}
-		catch (std::exception &e)
-		{
-			return reportException(suite, line, exprstr, e.what());
-		}
-		catch (...)
-		{
-			return reportException(suite, line, exprstr, "N/A");
-		}
+		catch (std::exception &e) { return reportException(suite, line, exprstr, e.what()); }
+		catch (...) { return reportException(suite, line, exprstr, "N/A"); }
 	}
 	
 	/**
@@ -847,14 +841,8 @@ namespace litest
 	{
 		bool res;
 		try { res = func(); }
-		catch (std::exception &e)
-		{
-			return reportException(suite, line, exprstr, e.what());
-		}
-		catch (...)
-		{
-			return reportException(suite, line, exprstr, "N/A");
-		}
+		catch (std::exception &e) { return reportException(suite, line, exprstr, e.what()); }
+		catch (...) { return reportException(suite, line, exprstr, "N/A"); }
 		
 		if (!res)
 		{
@@ -898,14 +886,8 @@ namespace litest
 			suite.output->formatPassedThrow(line, exprstr);
 			return AssertionResult::Passed;
 		}
-		catch (std::exception &e)
-		{
-			return reportException(suite, line, exprstr, e.what());
-		}
-		catch (...)
-		{
-			return reportException(suite, line, exprstr, "Uncaught exception in exception assertion");
-		}
+		catch (std::exception &e) { return reportException(suite, line, exprstr, e.what()); }
+		catch (...) { return reportException(suite, line, exprstr, "Uncaught exception in exception assertion"); }
 		
 		suite.failed();
 		suite.output->formatFailedThrow(line, exprstr);
@@ -928,7 +910,7 @@ namespace litest
 	 
 	 @return Result of the assertion.
 	 */
-	inline AssertionResult throws(TestSuite &suite, std::function<void(void)> func, OnAssertionFailure onFail = OnAssertionFailure::Continue, std::string exprstr = "N/A", int line = 0) noexcept
+	inline AssertionResult throws(TestSuite &suite, std::function<void(void)> func, OnAssertionFailure onFail = OnAssertionFailure::Continue, std::string exprstr = "N/A", int line = 0)
 	{
 		try { func(); }
 		catch (...)

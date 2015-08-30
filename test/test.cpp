@@ -106,8 +106,6 @@ struct NonPrintableType : TestType
 /** The main function. */
 int main()
 {
-//	runExample();
-	
 	litest::TestSuite suite("LiTest demonstration");
 	
 	LT_ADD_TEST(suite, "Tests that pass",
@@ -142,7 +140,7 @@ int main()
 		LT_CHECK(1 > 2);
 		LT_EQUAL(1 + 1, 3);
 		LT_THROWS(1);
-		LT_EXCEPT(throw std::logic_error("ERROR!"), std::out_of_range);
+		LT_EXCEPT(5 * 3, std::logic_error);
 		
 		// Add an assertion failure manually:
 		LT_FAIL("Some code went awry!");
@@ -177,8 +175,6 @@ int main()
 		LT_MESSAGE("Non-printable type");
 		NonPrintableType nonPrintableA(5);
 		NonPrintableType nonPrintableB(5);
-		
-	//	nonPrintableA = nonPrintableB;
 		
 		LT_EQUAL(nonPrintableA, nonPrintableB);
 	});
