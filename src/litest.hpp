@@ -44,6 +44,7 @@
 #include <iomanip>
 #include <numeric>
 #include <chrono>
+#include <iterator>
 
 /**@{*/
 /** @name Internal-use macros */
